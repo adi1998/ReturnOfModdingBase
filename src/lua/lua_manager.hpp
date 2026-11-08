@@ -295,6 +295,23 @@ namespace big
 					}
 				}
 
+				// Log missing optional dependencies.
+				for (const auto& soft_dependency : module_guid_to_module_info[guid].m_manifest.rom_soft_deps_no_version_number)
+				{
+					// The mod loader is not a lua module,
+					// but might be put as a dependency in the mod manifest,
+					// don't log it for missing optional dependencies.
+					if (soft_dependency.contains(mod_loader_name))
+					{
+						continue;
+					}
+
+					if (missing_modules.contains(soft_dependency))
+					{
+						LOG(INFO) << "Missing optional dependency for " << guid << ": " << soft_dependency;
+					}
+				}
+
 				if (not_missing_dependency)
 				{
 					const auto& module_info = module_guid_to_module_info[guid];
